@@ -40,8 +40,26 @@ if "edit_chat" not in st.session_state:
     st.session_state.edit_chat = None
 if "show_sidebar" not in st.session_state:
     st.session_state.show_sidebar = True
+if "mode" not in st.session_state:
+    st.session_state.mode = "Normal"
 
-# ================= CSS (FIXED VISIBILITY) =================
+# ================= ETHICAL PROMPT =================
+ethical_prompt = """
+You are an Ethical Reasoning Assistant.
+
+Always respond in this format:
+
+1. Situation Summary
+2. Ethical Analysis:
+   - Consequences
+   - Rights & Duties
+   - Fairness
+3. Perspectives
+4. Final Judgment
+5. Recommendation
+"""
+
+# ================= CSS (UNCHANGED) =================
 st.markdown("""
 <style>
 header {visibility:hidden;}
@@ -67,7 +85,7 @@ body {
 }
 
 .chat-ai {
-    background:#334155;  /* brighter for contrast */
+    background:#334155;
     color:#f1f5f9;
     padding:14px 16px;
     border-radius:14px;
@@ -78,12 +96,8 @@ body {
     box-shadow:0 4px 20px rgba(0,0,0,0.4);
 }
 
-/* MARKDOWN FIX */
-.chat-ai p {
-    margin:0;
-}
+.chat-ai p {margin:0;}
 
-/* CODE BLOCKS */
 .chat-ai code {
     background:#020617;
     color:#38bdf8;
@@ -98,19 +112,16 @@ body {
     overflow-x:auto;
 }
 
-/* INPUT */
 .stTextInput input {
     background:#1e293b !important;
     color:white !important;
 }
 
-/* SIDEBAR */
 section[data-testid="stSidebar"] {
     background:#020617;
     border-right:1px solid #1e293b;
 }
 
-/* BUTTON */
 .stButton>button {
     background:transparent;
     color:#cbd5f5;
@@ -120,12 +131,10 @@ section[data-testid="stSidebar"] {
     color:white;
 }
 
-/* CHAT INPUT */
 [data-testid="stChatInput"] {
     background:#0f172a;
 }
 
-/* MOBILE */
 @media (max-width: 768px) {
     .chat-user, .chat-ai {
         max-width:90%;
@@ -197,6 +206,13 @@ elif st.session_state.page == "chat":
 
         st.sidebar.title("💬 Chats")
 
+        # ✅ ADDED MODE SWITCH (ONLY ADDITION)
+        st.session_state.mode = st.sidebar.selectbox(
+            "🧠 Mode",
+            ["Normal", "Ethical Reasoning"],
+            key="mode_select"
+        )
+
         if st.sidebar.button("🚪 Logout", key="logout_btn"):
             st.session_state.user = None
             st.session_state.page = "login"
@@ -267,9 +283,17 @@ elif st.session_state.page == "chat":
         placeholder = st.empty()
         placeholder.markdown("<div class='chat-ai'>Typing...</div>", unsafe_allow_html=True)
 
+        # ✅ ONLY LOGIC CHANGE
+        if st.session_state.mode == "Ethical Reasoning":
+            system_msg = {"role":"system","content":ethical_prompt}
+        else:
+            system_msg = {"role":"system","content":"You are a helpful assistant."}
+
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
-            messages=[{"role":r,"content":c} for r,c in messages]+[{"role":"user","content":prompt}]
+            messages=[system_msg] +
+                     [{"role":r,"content":c} for r,c in messages] +
+                     [{"role":"user","content":prompt}]
         )
 
         reply = response.choices[0].message.content
