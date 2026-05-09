@@ -49,29 +49,31 @@ Zohair AI Chatbot is a modern, AI-powered conversational web application built u
 
 ## ⚙️ Installation
 
-```bash
+bash
 git clone https://github.com/your-username/zohair-ai-chatbot.git
 cd zohair-ai-chatbot
 pip install -r requirements.txt
 streamlit run app.py
-🌍 Deployment
+
+## 🌍 Deployment
 
 This app can be deployed using:
 
 Streamlit Cloud (recommended)
 Render
 AWS / VPS
-📊 Future Improvements
+
+## 📊 Future Improvements
 NLP-based chat title generation
 Advanced analytics dashboard
 Rate limiting & security enhancements
 Dark/Light theme toggle
 Export chat history
 
-👨‍💻 Author
+## 👨‍💻 Author
 
 Zohair Baloch
 
-⭐ Support
+## ⭐ Support
 
 If you like this project, give it a ⭐ on GitHub!
