@@ -27,13 +27,17 @@ Zohair AI Chatbot is a modern, AI-powered conversational web application built u
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 
 ├── app.py
+
 ├── chatbot.db
+
 ├── requirements.txt
+
 ├── README.md
+
 └── .env
 
 
